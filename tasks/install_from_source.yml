@@ -16,7 +16,11 @@
 
 - name: Verify SHASUM of nodejs {{nodejs_version_tag}}
   shell: curl {{nodejs_shasum_url}} | grep {{nodejs_file_name}} | sha1sum -c chdir={{nodejs_tmp_dir}}
-  when: wanted_version_installed.rc == 1
+  when: wanted_version_installed.rc == 1 and 'SHASUMS256' not in nodejs_shasum_url
+
+- name: Verify SHA256SUM of nodejs {{nodejs_version_tag}}
+  shell: curl {{nodejs_shasum_url}} | grep {{nodejs_file_name}} | sha256sum -c chdir={{nodejs_tmp_dir}}
+  when: wanted_version_installed.rc == 1 and 'SHASUMS256' in nodejs_shasum_url
 
 - name: Unpack nodejs {{nodejs_version_tag}}
   command: tar -xvzf {{nodejs_file_name}} chdir={{nodejs_tmp_dir}}
